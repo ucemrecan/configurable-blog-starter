@@ -1,0 +1,8 @@
+# Docker Compose configuration
+# Backend and database services will be added here in the future
+
+version: "3.8"
+
+services:
+  # Backend service will be added here
+  # Database service will be added here

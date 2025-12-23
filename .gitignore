@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+yarn.lock
+package-lock.json
+
+# Next.js
+client/.next/
+client/out/
+client/build
+client/.vercel
+
+# Testing
+coverage/
+*.log
+
+# Environment variables
+.env
+.env*.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Backend (for future use)
+backend/node_modules/
+backend/.env
+backend/dist/
+backend/build/
+
+# Docker
+*.log
+
+# Misc
+*.pem
+.cache/
+
