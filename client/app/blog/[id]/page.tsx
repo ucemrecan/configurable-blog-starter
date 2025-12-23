@@ -1,6 +1,10 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { blogPosts } from "@/lib/mockData";
+import { apiClient } from "@/lib/api";
+import { BlogPost } from "@/lib/types";
 import { notFound } from "next/navigation";
 
 interface BlogDetailPageProps {
@@ -10,7 +14,37 @@ interface BlogDetailPageProps {
 }
 
 export default function BlogDetailPage({ params }: BlogDetailPageProps) {
-  const post = blogPosts.find((p) => p.id === params.id);
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadBlog();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
+
+  const loadBlog = async () => {
+    try {
+      setLoading(true);
+      const blog = await apiClient.getBlog(params.id);
+      setPost({
+        ...blog,
+        id: String(blog.id),
+      });
+    } catch (error) {
+      console.error("Failed to load blog:", error);
+      notFound();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto text-center py-12">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    );
+  }
 
   if (!post) {
     notFound();
@@ -31,10 +65,10 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
         ← Back to Blog
       </Link>
 
-      {post.image && (
+      {(post.image || post.image_url) && (
         <div className="relative w-full h-96 mb-8 overflow-hidden">
           <Image
-            src={post.image}
+            src={post.image || post.image_url || ""}
             alt={post.title}
             fill
             className="object-cover"
@@ -52,9 +86,10 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
         <p className="text-sm text-gray-500 mb-8">{formattedDate}</p>
 
         <div className="prose prose-lg max-w-none">
-          <p className="text-base text-gray-900 leading-relaxed font-light whitespace-pre-line">
-            {post.content}
-          </p>
+          <div
+            className="text-base text-gray-900 leading-relaxed font-light"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </div>
       </article>
     </div>

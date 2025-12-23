@@ -1,8 +1,54 @@
-# Docker Compose configuration
-# Backend and database services will be added here in the future
-
-version: "3.8"
-
 services:
-  # Backend service will be added here
-  # Database service will be added here
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: blog-backend
+    volumes:
+      - ./backend/app:/app/app
+      - ./config:/app/config
+      - blog-db:/app
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./blog.db}
+      - BLOG_CONFIG_PATH=${BLOG_CONFIG_PATH:-/app/config/blog-config.yaml}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-root}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-root}
+    networks:
+      - blog-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: blog-frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000/api
+    networks:
+      - blog-network
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: blog-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - blog-network
+    restart: unless-stopped
+
+volumes:
+  blog-db:
+
+networks:
+  blog-network:
+    driver: bridge

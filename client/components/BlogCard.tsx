@@ -15,14 +15,15 @@ export default function BlogCard({ post, isLast = false }: BlogCardProps) {
   });
 
   const displayText = post.excerpt || post.content;
+  const imageUrl = post.image || post.image_url;
 
   return (
     <>
       <article className="bg-white flex gap-6 p-0">
-        {post.image && (
+        {imageUrl && (
           <div className="relative w-64 h-64 flex-shrink-0 overflow-hidden">
             <Image
-              src={post.image}
+              src={imageUrl}
               alt={post.title}
               fill
               className="object-cover"

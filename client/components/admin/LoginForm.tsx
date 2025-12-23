@@ -16,15 +16,20 @@ export default function LoginForm() {
     setError('');
     setLoading(true);
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-    const result = login(username, password);
+      const result = await login(username, password);
 
-    if (result.success) {
-      router.push('/admin/dashboard');
-    } else {
-      setError(result.message || 'Invalid credentials');
+      if (result.success) {
+        router.push('/admin/dashboard');
+      } else {
+        setError(result.message || 'Invalid credentials');
+        setLoading(false);
+      }
+    } catch (error) {
+      setError('An error occurred during login');
       setLoading(false);
     }
   };

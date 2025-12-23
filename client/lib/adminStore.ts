@@ -1,79 +1,85 @@
 import { BlogPost } from './types';
-import { blogPosts } from './mockData';
+import { apiClient } from './api';
+import { getStoredCredentials } from './adminAuth';
 
-const STORAGE_KEY = 'admin_blogs';
-
-// Initialize with existing mock data if storage is empty
-const initializeStorage = (): BlogPost[] => {
-  if (typeof window === 'undefined') {
-    return blogPosts;
+export const getAllBlogs = async (): Promise<BlogPost[]> => {
+  try {
+    const blogs = await apiClient.getBlogs();
+    // Convert backend ID (number) to string for frontend compatibility
+    return blogs.map(blog => ({
+      ...blog,
+      id: String(blog.id),
+    }));
+  } catch (error) {
+    console.error('Failed to fetch blogs:', error);
+    return [];
   }
-  
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(blogPosts));
-    return blogPosts;
+};
+
+export const getBlogById = async (id: string): Promise<BlogPost | undefined> => {
+  try {
+    const blog = await apiClient.getBlog(id);
+    return {
+      ...blog,
+      id: String(blog.id),
+    };
+  } catch (error) {
+    console.error('Failed to fetch blog:', error);
+    return undefined;
+  }
+};
+
+export const createBlog = async (blog: Omit<BlogPost, 'id'>): Promise<BlogPost> => {
+  const credentials = getStoredCredentials();
+  if (!credentials) {
+    throw new Error('Not authenticated');
   }
   
   try {
-    return JSON.parse(stored);
-  } catch {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(blogPosts));
-    return blogPosts;
+    const newBlog = await apiClient.createBlog(blog, credentials.username, credentials.password);
+    return {
+      ...newBlog,
+      id: String(newBlog.id),
+    };
+  } catch (error: any) {
+    throw new Error(error.message || 'Failed to create blog');
   }
 };
 
-export const getAllBlogs = (): BlogPost[] => {
-  return initializeStorage();
-};
-
-export const getBlogById = (id: string): BlogPost | undefined => {
-  const blogs = getAllBlogs();
-  return blogs.find(blog => blog.id === id);
-};
-
-export const createBlog = (blog: Omit<BlogPost, 'id'>): BlogPost => {
-  const blogs = getAllBlogs();
-  const newId = String(Date.now());
-  const newBlog: BlogPost = {
-    ...blog,
-    id: newId,
-  };
-  
-  const updatedBlogs = [newBlog, ...blogs];
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBlogs));
-  return newBlog;
-};
-
-export const updateBlog = (id: string, updates: Partial<BlogPost>): BlogPost | null => {
-  const blogs = getAllBlogs();
-  const index = blogs.findIndex(blog => blog.id === id);
-  
-  if (index === -1) {
-    return null;
+export const updateBlog = async (id: string, updates: Partial<BlogPost>): Promise<BlogPost | null> => {
+  const credentials = getStoredCredentials();
+  if (!credentials) {
+    throw new Error('Not authenticated');
   }
   
-  const updatedBlog: BlogPost = {
-    ...blogs[index],
-    ...updates,
-    id, // Ensure ID doesn't change
-  };
-  
-  const updatedBlogs = [...blogs];
-  updatedBlogs[index] = updatedBlog;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBlogs));
-  return updatedBlog;
+  try {
+    const updatedBlog = await apiClient.updateBlog(id, updates, credentials.username, credentials.password);
+    return {
+      ...updatedBlog,
+      id: String(updatedBlog.id),
+    };
+  } catch (error: any) {
+    if (error.message?.includes('404')) {
+      return null;
+    }
+    throw new Error(error.message || 'Failed to update blog');
+  }
 };
 
-export const deleteBlog = (id: string): boolean => {
-  const blogs = getAllBlogs();
-  const filteredBlogs = blogs.filter(blog => blog.id !== id);
-  
-  if (filteredBlogs.length === blogs.length) {
-    return false; // Blog not found
+export const deleteBlog = async (id: string): Promise<boolean> => {
+  const credentials = getStoredCredentials();
+  if (!credentials) {
+    throw new Error('Not authenticated');
   }
   
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredBlogs));
-  return true;
+  try {
+    await apiClient.deleteBlog(id, credentials.username, credentials.password);
+    return true;
+  } catch (error: any) {
+    if (error.message?.includes('404')) {
+      return false;
+    }
+    throw new Error(error.message || 'Failed to delete blog');
+  }
 };
 

@@ -18,9 +18,14 @@ export default function AdminDashboard() {
     loadBlogs();
   }, []);
 
-  const loadBlogs = () => {
-    const allBlogs = getAllBlogs();
-    setBlogs(allBlogs);
+  const loadBlogs = async () => {
+    try {
+      const allBlogs = await getAllBlogs();
+      setBlogs(allBlogs);
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Failed to load blogs' });
+      setTimeout(() => setMessage(null), 3000);
+    }
   };
 
   const handleCreate = () => {
@@ -33,44 +38,44 @@ export default function AdminDashboard() {
     setShowForm(true);
   };
 
-  const handleSave = (blogData: Omit<BlogPost, 'id'>) => {
+  const handleSave = async (blogData: Omit<BlogPost, 'id'>) => {
     try {
       if (editingBlog) {
-        const updated = updateBlog(editingBlog.id, blogData);
+        const updated = await updateBlog(String(editingBlog.id), blogData);
         if (updated) {
           setMessage({ type: 'success', text: 'Blog updated successfully!' });
         } else {
           setMessage({ type: 'error', text: 'Failed to update blog' });
         }
       } else {
-        createBlog(blogData);
+        await createBlog(blogData);
         setMessage({ type: 'success', text: 'Blog created successfully!' });
       }
       
-      loadBlogs();
+      await loadBlogs();
       setShowForm(false);
       setEditingBlog(undefined);
       
       // Clear message after 3 seconds
       setTimeout(() => setMessage(null), 3000);
-    } catch (error) {
-      setMessage({ type: 'error', text: 'An error occurred' });
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'An error occurred' });
       setTimeout(() => setMessage(null), 3000);
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     try {
-      const success = deleteBlog(id);
+      const success = await deleteBlog(id);
       if (success) {
         setMessage({ type: 'success', text: 'Blog deleted successfully!' });
-        loadBlogs();
+        await loadBlogs();
       } else {
         setMessage({ type: 'error', text: 'Failed to delete blog' });
       }
       setTimeout(() => setMessage(null), 3000);
-    } catch (error) {
-      setMessage({ type: 'error', text: 'An error occurred' });
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'An error occurred' });
       setTimeout(() => setMessage(null), 3000);
     }
   };

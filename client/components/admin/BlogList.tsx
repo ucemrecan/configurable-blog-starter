@@ -13,12 +13,12 @@ interface BlogListProps {
 export default function BlogList({ blogs, onEdit, onDelete }: BlogListProps) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  const handleDeleteClick = (id: string) => {
-    setDeleteConfirm(id);
+  const handleDeleteClick = (id: string | number) => {
+    setDeleteConfirm(String(id));
   };
 
-  const handleDeleteConfirm = (id: string) => {
-    onDelete(id);
+  const handleDeleteConfirm = (id: string | number) => {
+    onDelete(String(id));
     setDeleteConfirm(null);
   };
 
@@ -101,10 +101,10 @@ export default function BlogList({ blogs, onEdit, onDelete }: BlogListProps) {
                     >
                       Edit
                     </button>
-                    {deleteConfirm === blog.id ? (
+                    {deleteConfirm === String(blog.id) ? (
                       <div className="flex space-x-2">
                         <button
-                          onClick={() => handleDeleteConfirm(blog.id)}
+                          onClick={() => handleDeleteConfirm(String(blog.id))}
                           className="text-red-600 hover:text-red-900 transition-colors"
                         >
                           Confirm
@@ -118,7 +118,7 @@ export default function BlogList({ blogs, onEdit, onDelete }: BlogListProps) {
                       </div>
                     ) : (
                       <button
-                        onClick={() => handleDeleteClick(blog.id)}
+                        onClick={() => handleDeleteClick(String(blog.id))}
                         className="text-red-600 hover:text-red-900 transition-colors"
                       >
                         Delete

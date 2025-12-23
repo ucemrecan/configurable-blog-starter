@@ -18,7 +18,7 @@ export default function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
   const [title, setTitle] = useState(blog?.title || '');
   const [content, setContent] = useState(blog?.content || '');
   const [excerpt, setExcerpt] = useState(blog?.excerpt || '');
-  const [image, setImage] = useState(blog?.image || '');
+  const [image, setImage] = useState(blog?.image || blog?.image_url || '');
   const [date, setDate] = useState(
     blog?.date || new Date().toISOString().split('T')[0]
   );
@@ -29,7 +29,7 @@ export default function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
       setTitle(blog.title || '');
       setContent(blog.content || '');
       setExcerpt(blog.excerpt || '');
-      setImage(blog.image || '');
+      setImage(blog.image || blog.image_url || '');
       setDate(blog.date || new Date().toISOString().split('T')[0]);
     }
   }, [blog]);
@@ -63,8 +63,8 @@ export default function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
     onSave({
       title: title.trim(),
       content: content.trim(),
-      excerpt: excerpt.trim(),
-      image: image || undefined,
+      excerpt: excerpt.trim() || undefined,
+      image_url: image || undefined,
       date,
     });
   };

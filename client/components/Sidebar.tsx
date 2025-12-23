@@ -1,16 +1,46 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { apiClient } from "@/lib/api";
 import { profileData } from "@/lib/mockData";
 
 export default function Sidebar() {
+  const [config, setConfig] = useState(profileData);
+  const [socialMedia, setSocialMedia] = useState<Record<string, string>>({
+    twitter: "https://twitter.com",
+    github: "https://github.com/ucemrecan",
+    linkedin: "https://linkedin.com",
+  });
+
+  useEffect(() => {
+    loadConfig();
+  }, []);
+
+  const loadConfig = async () => {
+    try {
+      const blogConfig = await apiClient.getConfig();
+      setConfig({
+        name: blogConfig.blog.name,
+        description: blogConfig.blog.description,
+        profileImage: blogConfig.blog.profileImage,
+      });
+      setSocialMedia(blogConfig.contact.social_media);
+    } catch (error) {
+      console.error("Failed to load config:", error);
+      // Use default values from mockData
+    }
+  };
+
   return (
     <aside className="w-full md:w-80 lg:w-96 p-8 md:p-12 bg-white border-r border-gray-200 flex flex-col h-screen md:fixed md:left-0 md:top-0 md:overflow-y-auto">
       <div className="flex flex-col space-y-8 flex-1">
         {/* Profile Picture */}
         <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden">
           <Image
-            src={profileData.profileImage}
-            alt={profileData.name}
+            src={config.profileImage}
+            alt={config.name}
             fill
             className="object-cover"
             priority
@@ -19,12 +49,12 @@ export default function Sidebar() {
 
         {/* Site Title */}
         <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 tracking-tight">
-          {profileData.name}
+          {config.name}
         </h1>
 
         {/* Site Description */}
         <p className="text-base text-gray-600 leading-relaxed">
-          {profileData.description}
+          {config.description}
         </p>
 
         {/* Navigation Links */}
@@ -62,7 +92,7 @@ export default function Sidebar() {
       <div className="pt-4 border-t border-gray-200">
         <div className="flex space-x-4 mb-4">
           <a
-            href="https://twitter.com"
+            href={socialMedia.twitter}
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-600 hover:text-gray-900 transition-colors"
@@ -73,7 +103,7 @@ export default function Sidebar() {
             </svg>
           </a>
           <a
-            href="https://github.com"
+            href={socialMedia.github}
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-600 hover:text-gray-900 transition-colors"
@@ -88,7 +118,7 @@ export default function Sidebar() {
             </svg>
           </a>
           <a
-            href="https://linkedin.com"
+            href={socialMedia.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-600 hover:text-gray-900 transition-colors"
@@ -108,10 +138,9 @@ export default function Sidebar() {
               rel="noopener noreferrer"
               className="underline hover:text-gray-900 transition-colors"
             >
-              ucemrecan
+              github.com/ucemrecan
             </a>
           </p>
-          <p></p>
         </div>
       </div>
     </aside>

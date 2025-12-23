@@ -1,6 +1,39 @@
-import { profileData } from '@/lib/mockData';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { apiClient } from '@/lib/api';
 
 export default function AboutPage() {
+  const [about, setAbout] = useState({
+    bio: '',
+    skills: [] as string[],
+    experience: '',
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadConfig();
+  }, []);
+
+  const loadConfig = async () => {
+    try {
+      const config = await apiClient.getConfig();
+      setAbout(config.about);
+    } catch (error) {
+      console.error('Failed to load config:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl">
       <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 leading-tight">
@@ -8,19 +41,16 @@ export default function AboutPage() {
       </h1>
       <div className="space-y-8">
         <p className="text-lg text-gray-700 leading-relaxed">
-          {profileData.description}
+          {about.bio}
         </p>
         <div>
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
             Skills & Expertise
           </h2>
           <ul className="list-disc list-inside space-y-2 text-gray-700">
-            <li>Full-stack web development</li>
-            <li>React & Next.js</li>
-            <li>TypeScript</li>
-            <li>Node.js & Express</li>
-            <li>Database design & management</li>
-            <li>UI/UX design</li>
+            {about.skills.map((skill, index) => (
+              <li key={index}>{skill}</li>
+            ))}
           </ul>
         </div>
         <div>
@@ -28,13 +58,10 @@ export default function AboutPage() {
             Experience
           </h2>
           <p className="text-gray-700 leading-relaxed">
-            With several years of experience in web development, I've worked on various projects
-            ranging from small business websites to large-scale applications. I'm passionate about
-            creating clean, efficient, and user-friendly web experiences.
+            {about.experience}
           </p>
         </div>
       </div>
     </div>
   );
 }
-

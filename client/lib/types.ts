@@ -1,10 +1,11 @@
 export interface BlogPost {
-  id: string;
+  id: string | number;
   title: string;
   date: string;
   content: string;
   excerpt?: string;
   image?: string;
+  image_url?: string;
 }
 
 export interface Profile {
