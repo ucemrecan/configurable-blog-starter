@@ -1,7 +1,7 @@
 blog:
   name: "John Doe"
   description: "Full-stack developer passionate about creating beautiful web experiences. I write about web development, design, and technology."
-  profile_image: "/profile.svg"
+  profile_image: "/profile.jpeg"
 
 about:
   bio: "Full-stack developer passionate about creating beautiful web experiences. I write about web development, design, and technology."
@@ -18,5 +18,5 @@ contact:
   email: "contact@example.com"
   social_media:
     twitter: "https://twitter.com"
-    github: "https://github.com/ucemrecan"
+    github: "https://github.com"
     linkedin: "https://linkedin.com"

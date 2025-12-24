@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import os
 
@@ -16,7 +16,7 @@ def verify_admin_credentials(credentials: HTTPBasicCredentials) -> bool:
     )
 
 
-def get_current_admin(credentials: HTTPBasicCredentials):
+def get_current_admin(credentials: HTTPBasicCredentials = Depends(security)):
     """Get current admin if authenticated."""
     if not verify_admin_credentials(credentials):
         raise HTTPException(

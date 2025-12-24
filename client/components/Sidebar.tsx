@@ -138,7 +138,7 @@ export default function Sidebar() {
               rel="noopener noreferrer"
               className="underline hover:text-gray-900 transition-colors"
             >
-              github.com/ucemrecan
+              @ucemrecan
             </a>
           </p>
         </div>

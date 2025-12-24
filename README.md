@@ -10,13 +10,12 @@ A configurable personal blog starter built with Next.js, FastAPI, and Docker. Th
 - **Image Upload**: Upload and manage images for blog posts
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 - **Docker Support**: Run the entire stack with Docker Compose
-- **Nginx Gateway**: Single port access with Nginx as reverse proxy
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14+ (App Router), TypeScript, Tailwind CSS, React 18
 - **Backend**: FastAPI, SQLite, SQLAlchemy
-- **Infrastructure**: Docker, Docker Compose, Nginx
+- **Infrastructure**: Docker, Docker Compose
 - **Tools**: Makefile for project management
 
 ## Screenshots
@@ -107,11 +106,12 @@ make dev      # Start development environment
 docker-compose up --build
 ```
 
-The blog will be available at [http://localhost](http://localhost)
+The blog will be available at [http://localhost:3000](http://localhost:3000)
+The API will be available at [http://localhost:8000](http://localhost:8000)
 
 ### Step 5: Access Admin Panel
 
-Navigate to [http://localhost/admin](http://localhost/admin) and log in with your admin credentials.
+Navigate to [http://localhost:3000/admin](http://localhost:3000/admin) and log in with your admin credentials.
 
 ## Project Structure
 
@@ -119,7 +119,6 @@ Navigate to [http://localhost/admin](http://localhost/admin) and log in with you
 configurable-blog-starter/
 ├── client/              # Next.js frontend application
 ├── backend/             # FastAPI backend application
-├── nginx/               # Nginx configuration
 ├── config/              # Blog configuration (YAML)
 ├── docker-compose.yml   # Docker Compose configuration
 ├── Makefile             # Make commands for project management

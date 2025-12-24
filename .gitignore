@@ -58,3 +58,17 @@ backend/build/
 *.pem
 .cache/
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+venv/
+env/
+ENV/
+.venv/

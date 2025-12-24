@@ -75,10 +75,7 @@ logs-backend: ## Show backend logs
 	$(DOCKER_COMPOSE) logs -f backend
 
 logs-frontend: ## Show frontend logs
-	$(DOCKER_COMPOSE) logs -f frontend-builder
-
-logs-nginx: ## Show nginx logs
-	$(DOCKER_COMPOSE) logs -f nginx
+	$(DOCKER_COMPOSE) logs -f frontend
 
 restart: ## Restart all services
 	@echo "$(GREEN)Restarting all services...$(NC)"
@@ -128,8 +125,8 @@ migrate-create: ## Create a new migration (usage: make migrate-create MESSAGE="m
 shell-backend: ## Open shell in backend container
 	$(DOCKER_COMPOSE) exec backend /bin/bash
 
-shell-nginx: ## Open shell in nginx container
-	$(DOCKER_COMPOSE) exec nginx /bin/sh
+shell-frontend: ## Open shell in frontend container
+	$(DOCKER_COMPOSE) exec frontend /bin/sh
 
 ps: ## Show running containers
 	$(DOCKER_COMPOSE) ps
@@ -150,9 +147,5 @@ rebuild-backend: ## Rebuild backend container
 
 rebuild-frontend: ## Rebuild frontend container
 	@echo "$(GREEN)Rebuilding frontend container...$(NC)"
-	$(DOCKER_COMPOSE) build --no-cache frontend-builder
-
-rebuild-nginx: ## Rebuild nginx container
-	@echo "$(GREEN)Rebuilding nginx container...$(NC)"
-	$(DOCKER_COMPOSE) build --no-cache nginx
+	$(DOCKER_COMPOSE) build --no-cache frontend
 

@@ -110,9 +110,31 @@ class ApiClient {
   }
 
   async deleteBlog(id: string, username: string, password: string): Promise<void> {
-    return this.authRequest<void>(`/blogs/${id}`, {
+    const url = `${API_URL}/blogs/${id}`;
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (username && password) {
+      const credentials = btoa(`${username}:${password}`);
+      headers['Authorization'] = `Basic ${credentials}`;
+    }
+
+    const response = await fetch(url, {
       method: 'DELETE',
-    }, username, password);
+      headers,
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.statusText}`);
+    }
+
+    // 204 No Content doesn't have a body
+    if (response.status === 204) {
+      return;
+    }
+
+    return response.json();
   }
 
   // Admin endpoints

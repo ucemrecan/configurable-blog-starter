@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBasicCredentials
 from ..schemas import AdminLogin, AdminResponse
-from ..utils.auth import security, verify_admin_credentials
+from ..utils.auth import security, verify_admin_credentials, get_current_admin
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -25,9 +25,7 @@ def logout():
 
 
 @router.get("/me", response_model=AdminResponse)
-def get_current_admin_info(credentials: HTTPBasicCredentials = Depends(security)):
+def get_current_admin_info(admin: dict = Depends(get_current_admin)):
     """Get current admin information."""
-    from ..utils.auth import get_current_admin
-    admin = get_current_admin(credentials)
     return AdminResponse(username=admin["username"])
 
