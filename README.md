@@ -20,15 +20,22 @@ A configurable personal blog starter built with Next.js, FastAPI, and Docker. Th
 
 ## Screenshots
 
-<!-- Screenshots will be added here -->
-<!-- Example format:
-![Blog Homepage](screenshots/blog-homepage.png)
-![Admin Panel](screenshots/admin-panel.png)
-![Blog Post](screenshots/blog-post.png)
--->
+Homepage:
+
+<img width="1897" height="847" alt="Screenshot 2025-12-24 at 11 58 12" src="https://github.com/user-attachments/assets/35702009-a423-42e8-aec3-084ea304db47" />
+
+
+Admin Panel:
+
+<img width="1907" height="845" alt="Screenshot 2025-12-24 at 11 58 41" src="https://github.com/user-attachments/assets/ed2053bb-b354-441f-ac0a-d6b0679740cb" />
+
+
+Blog Post:
+
+<img width="1910" height="844" alt="Screenshot 2025-12-24 at 11 58 24" src="https://github.com/user-attachments/assets/821d8d3c-2dfb-4856-9781-0956cfc37abd" />
 
 ## Prerequisites
-å
+
 - Docker and Docker Compose
 - Make (optional, for convenience commands)
 
